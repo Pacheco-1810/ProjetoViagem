@@ -1,0 +1,33 @@
+.fundo-topo {
+    background-color: #FBF8F3;
+    
+}
+.fundo-faixa{
+    background-color: #24282B;
+}
+.corfundo{
+    background-color: #F9F8F3
+}
+
+.fundo-botao{
+    background-color: #DAD0BE;
+}
+
+.nav-opcao {
+    text-decoration: none;
+    color: #3B3830;
+    padding: 10px 20px;
+    border-radius: 8px;
+    transition: 0.3s;
+}
+
+.nav-opcao:hover {
+    background-color: #C0A678;
+    color: white;
+}
+
+
+.nav-opcao.active {
+    background-color: #C0A678;
+    color: white;
+}
