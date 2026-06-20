@@ -1,0 +1,80 @@
+.fundo-topo {
+    background-color: #FBF8F3;
+    
+}
+.fundo-faixa{
+    background-color: #24282B;
+}
+.corfundo{
+    background-color: #F9F8F3
+}
+
+.fundo-botao{
+    background-color: #DAD0BE;
+}
+
+.nav-opcao {
+    text-decoration: none;
+    color: #3B3830;
+    padding: 10px 20px;
+    border-radius: 8px;
+    transition: 0.3s;
+}
+
+.nav-opcao:hover {
+    background-color: #C0A678;
+    color: white;
+}
+
+
+.nav-opcao.active {
+    background-color: #C0A678;
+    color: white;
+}
+
+.imagem-carrossel {
+    height: 600px;
+    object-fit: cover;
+}
+
+.carousel-caption {
+    background-color: rgba(0, 0, 0, 0.4);
+    border-radius: 10px;
+    padding: 15px;
+}
+
+.destaque-promocao {
+    background: linear-gradient(135deg, #DAD0BE, #C0A678);
+    color: #3B3830;
+    border: 2px solid #C0A678;
+}
+
+.btn-explorar {
+    background-color: #24282B !important;
+    color: #FBF8F3 !important;
+    border: none !important;
+    transition: 0.3s;
+}
+
+.btn-explorar:hover {
+    background-color: #3B3830 !important;
+}
+
+.rodape {
+    background-color: #24282B;
+    color: #FBF8F3;
+    border-top: 4px solid #C0A678;
+}
+
+.rodape h5 {
+    color: #C0A678;
+}
+
+.card-img-top {
+    height: 250px;
+    object-fit: cover;
+}
+
+.sticky-top {
+    top: 20px;
+}
