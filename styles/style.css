@@ -78,3 +78,106 @@
 .sticky-top {
     top: 20px;
 }
+
+.pagina-login {
+    background: linear-gradient(
+            135deg,
+            #FFF7CC 0%,
+            #917238 50%,
+            #24282B 100%
+    );
+
+    min-height: 100vh;
+    margin: 0;
+}
+
+.login-area {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.login-card {
+    width: 450px;
+    background-color: #24282B;
+    border-radius: 20px;
+    padding: 40px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.35);
+}
+
+.logo-login {
+    text-align: center;
+    color: #917238;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.login-card h2 {
+    text-align: center;
+    color: #FFF7CC;
+    margin-bottom: 30px;
+    font-weight: bold;
+}
+
+.login-card label {
+    display: block;
+    margin-bottom: 5px;
+    color: #FFF7CC;
+    font-weight: 500;
+}
+
+.login-card input {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #917238;
+    border-radius: 8px;
+    margin-bottom: 18px;
+    outline: none;
+}
+
+.login-card input:focus {
+    border-color: #FFF7CC;
+    box-shadow: 0 0 10px rgba(255,247,204,0.3);
+}
+
+.btn-login {
+    width: 100%;
+    padding: 12px;
+    background-color: #917238;
+    color: #FFF7CC;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.btn-login:hover {
+    background-color: #393732;
+}
+
+.texto-cadastro {
+    text-align: center;
+    margin-top: 20px;
+    color: #FFF7CC;
+}
+
+.texto-cadastro a {
+    color: #917238;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.texto-cadastro a:hover {
+    color: #FFF7CC;
+}
+
+@media (max-width: 576px) {
+
+    .login-card {
+        width: 100%;
+        padding: 30px;
+    }
+
+}
