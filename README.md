@@ -1,6 +1,7 @@
 # ViajeMais
 
 Projeto acadêmico de um site de turismo desenvolvido com HTML, CSS, JavaScript e Bootstrap.
+Alunos: Gabriel Silveira Pacheco, Mauricio Miotto Martini
 
 ## Funcionalidades
 
