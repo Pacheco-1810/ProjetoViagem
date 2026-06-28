@@ -2,6 +2,10 @@
 
 Projeto acadêmico desenvolvido para a disciplina de Desenvolvimento Web, utilizando HTML5, CSS3, Bootstrap 5 e JavaScript. O sistema simula uma agência de viagens, permitindo o cadastro e login de usuários, consulta de pacotes turísticos, gerenciamento de perfil, carrinho de compras e solicitação de orçamentos personalizados.
 
+## Repositório do Projeto
+
+Link: https://github.com/Pacheco-1810/ProjetoViagem
+
 ## Integrantes
 
 - Gabriel Silveira Pacheco
