@@ -107,7 +107,7 @@ function atualizarTotal() {
         });
 }
 
-function finalizarCompra(){
+function finalizarCompra() {
     const usuario = JSON.parse(sessionStorage.getItem("usuarioLogado"));
 
     if (!usuario) {
@@ -116,8 +116,8 @@ function finalizarCompra(){
         return;
     }
 
-    if (total <=0){
-        alert("Adicione pelo menos um pacote ao carrinho antes de finalizar.")
+    if (total <= 0) {
+        alert("Adicione pelo menos um pacote ao carrinho antes de finalizar.");
         return;
     }
 
@@ -125,14 +125,25 @@ function finalizarCompra(){
         localStorage.getItem("historicoViagens_" + usuario.email)
     ) || [];
 
-    const itensCarrinho = document.querySelectorAll("#listaCarrinho li")
+    const descontoPercentual = calcularDescontoUsuario(usuario.email);
+
+    const itensCarrinho = document.querySelectorAll("#listaCarrinho li");
 
     itensCarrinho.forEach(function (item) {
-        const texto = item.innerText;
+        const destino = item.querySelector("strong").textContent;
+
+        const valorOriginal = total;
+
+        const valorComDesconto = calcularValorComDesconto(
+            valorOriginal,
+            descontoPercentual
+        );
 
         historico.push({
-            destino: texto.split("\n")[0],
-            valor : total,
+            destino: destino,
+            valorOriginal: valorOriginal,
+            desconto: descontoPercentual,
+            valor: valorComDesconto,
             data: new Date().toLocaleDateString("pt-BR")
         });
     });
@@ -142,11 +153,36 @@ function finalizarCompra(){
         JSON.stringify(historico)
     );
 
-    alert("Compra finalizada com sucesso!");
+    alert("Compra finalizada com sucesso! Desconto aplicado: " + descontoPercentual + "%");
 
     document.getElementById("listaCarrinho").innerHTML = "";
     total = 0;
     atualizarTotal();
 
     window.location.href = "Perfil.html";
+}
+
+function calcularDescontoUsuario(emailUsuario) {
+    const historico = JSON.parse(
+        localStorage.getItem("historicoViagens_" + emailUsuario)
+    ) || [];
+
+    const qtdViagens = historico.length;
+
+    if (qtdViagens >= 10) {
+        return 20;
+    }
+
+    if (qtdViagens >= 6) {
+        return 15;
+    }
+
+    if (qtdViagens >= 3) {
+        return 10;
+    }
+
+    return 5;
+}
+function calcularValorComDesconto(valor, descontoPercentual) {
+    return valor - (valor * descontoPercentual / 100);
 }
