@@ -106,3 +106,47 @@ function atualizarTotal() {
             maximumFractionDigits: 2
         });
 }
+
+function finalizarCompra(){
+    const usuario = JSON.parse(sessionStorage.getItem("usuarioLogado"));
+
+    if (!usuario) {
+        alert("Você precisa estar logado para finalizar a compra!");
+        window.location.href = "Login.html";
+        return;
+    }
+
+    if (total <=0){
+        alert("Adicione pelo menos um pacote ao carrinho antes de finalizar.")
+        return;
+    }
+
+    const historico = JSON.parse(
+        localStorage.getItem("historicoViagens_" + usuario.email)
+    ) || [];
+
+    const itensCarrinho = document.querySelectorAll("#listaCarrinho li")
+
+    itensCarrinho.forEach(function (item) {
+        const texto = item.innerText;
+
+        historico.push({
+            destino: texto.split("\n")[0],
+            valor : total,
+            data: new Date().toLocaleDateString("pt-BR")
+        });
+    });
+
+    localStorage.setItem(
+        "historicoViagens_" + usuario.email,
+        JSON.stringify(historico)
+    );
+
+    alert("Compra finalizada com sucesso!");
+
+    document.getElementById("listaCarrinho").innerHTML = "";
+    total = 0;
+    atualizarTotal();
+
+    window.location.href = "Perfil.html";
+}

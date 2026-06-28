@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu Perfil - ViajeMais</title>
+    <link rel="stylesheet" href="../styles/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="corfundo">
+
+<header class="fundo-faixa py-3">
+    <div class="container d-flex justify-content-end gap-2" id="areaUsuario">
+        <a href="Login.html" class="btn btn-outline-light">Login</a>
+        <a href="Cadastro.html" class="btn btn-warning fw-bold">Cadastre-se</a>
+    </div>
+</header>
+
+<section id="topo" class="d-flex flex-column align-items-center justify-content-center fundo-topo text-black rounded-bottom">
+    <img src="../imgs/logo.png.jpeg" class="img-fluid rounded" alt="Logo ViajeMais" style="max-width: 300px;">
+</section>
+
+<nav class="w-100">
+    <ul class="d-flex flex-row justify-content-center align-items-center list-unstyled gap-4 fundo-botao p-3 rounded navbar navbar-expand-lg">
+        <li><a href="index.html" class="text-decoration-none text-white fundo-botao rounded nav-opcao fs-4">Início</a></li>
+        <li><a href="pacotes.html" class="text-decoration-none text-white fundo-botao rounded nav-opcao fs-4">Pacotes</a></li>
+        <li><a href="sobre.html" class="text-decoration-none text-white fundo-botao rounded nav-opcao fs-4">Sobre</a></li>
+        <li><a href="contato.html" class="text-decoration-none text-white fundo-botao rounded nav-opcao fs-4">Contato</a></li>
+        <li><a href="perfil.html" class="text-decoration-none text-white fundo-botao rounded nav-opcao active fs-4">Meu Perfil</a></li>
+    </ul>
+</nav>
+
+<main class="container mt-5">
+
+    <section class="text-center mb-4">
+        <h1>Dashboard do Usuário</h1>
+        <p class="fs-5">Acompanhe seu perfil, suas viagens e seus benefícios.</p>
+    </section>
+
+    <section id="avisoLogin" class="alert alert-warning d-none">
+        Você precisa estar logado para acessar o perfil.
+        <a href="Login.html" class="alert-link">Clique aqui para fazer login.</a>
+    </section>
+
+    <section id="areaPerfil" class="d-none">
+
+        <section class="row g-4 mb-4">
+            <article class="col-md-4">
+                <div class="card shadow h-100 card-dashboard">
+                    <div class="card-body text-center">
+                        <h5>Nome</h5>
+                        <h2 id="perfilNome">Usuário</h2>
+                    </div>
+                </div>
+            </article>
+
+            <article class="col-md-4">
+                <div class="card shadow h-100 card-dashboard">
+                    <div class="card-body text-center">
+                        <h5>E-mail</h5>
+                        <p id="perfilEmail" class="fs-5">email@email.com</p>
+                    </div>
+                </div>
+            </article>
+
+            <article class="col-md-4">
+                <div class="card shadow h-100 card-dashboard">
+                    <div class="card-body text-center">
+                        <h5>Nível atual</h5>
+                        <h2 id="nivelUsuario">Bronze</h2>
+                        <span id="descontoUsuario" class="badge text-bg-success">5% de desconto</span>
+                    </div>
+                </div>
+            </article>
+        </section>
+
+        <section class="row g-4 mb-4">
+            <article class="col-md-4">
+                <div class="card shadow h-100">
+                    <div class="card-body text-center">
+                        <h5>Viagens compradas</h5>
+                        <h1 id="qtdViagens">0</h1>
+                    </div>
+                </div>
+            </article>
+
+            <article class="col-md-4">
+                <div class="card shadow h-100">
+                    <div class="card-body text-center">
+                        <h5>Total gasto</h5>
+                        <h1>R$ <span id="totalGasto">0,00</span></h1>
+                    </div>
+                </div>
+            </article>
+
+            <article class="col-md-4">
+                <div class="card shadow h-100">
+                    <div class="card-body text-center">
+                        <h5>Próximo nível</h5>
+                        <h1 id="proximoNivel">Prata</h1>
+                    </div>
+                </div>
+            </article>
+        </section>
+
+        <section class="card shadow border-0 mb-4">
+            <div class="card-body">
+                <h4>Progresso de nível</h4>
+                <p id="textoProgresso">Compre mais viagens para subir de nível.</p>
+
+                <div class="progress">
+                    <div id="barraNivel" class="progress-bar" style="width: 0%">0%</div>
+                </div>
+            </div>
+        </section>
+
+        <section class="row g-4">
+            <article class="col-lg-8">
+                <div class="card shadow border-0">
+                    <div class="card-body">
+                        <h4>Histórico de viagens</h4>
+                        <div id="historicoViagens"></div>
+                    </div>
+                </div>
+            </article>
+
+            <aside class="col-lg-4">
+                <div class="card shadow border-0 mb-3">
+                    <div class="card-body">
+                        <h4>Benefícios por nível</h4>
+
+                        <ul class="list-group">
+                            <li class="list-group-item d-flex justify-content-between">
+                                Bronze
+                                <span class="badge text-bg-secondary">5%</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between">
+                                Prata
+                                <span class="badge text-bg-primary">10%</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between">
+                                Ouro
+                                <span class="badge text-bg-warning">15%</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between">
+                                Diamante
+                                <span class="badge text-bg-success">20%</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </aside>
+        </section>
+
+    </section>
+
+</main>
+
+<footer class="rodape mt-5">
+    <div class="container text-center py-3">
+        <h5 class="mb-2">ViajeMais Turismo</h5>
+        <p class="mb-0">contato@viajemais.com.br | (54) 99999-9999</p>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+<script src="../scripts/scriptHeader.js"></script>
+<script src="../scripts/scriptPerfil.js"></script>
+</body>
+</html>
