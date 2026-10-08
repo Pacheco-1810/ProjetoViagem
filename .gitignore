@@ -1,0 +1,17 @@
+venv/
+
+
+
+.venv/
+
+
+
+pycache/
+
+
+
+db.sqlite3
+
+
+
+*.pyc
