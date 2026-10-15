@@ -1,0 +1,16 @@
+{% extends "registration/base_auth.html" %}
+{% block titulo %}Login{% endblock %}
+{% block conteudo %}
+<h2>Login</h2>
+<form method="post">
+    {% csrf_token %}
+    {% if form.errors %}<div class="alert alert-danger py-2">E-mail ou senha inválidos.</div>{% endif %}
+    <input type="hidden" name="next" value="{{ next }}">
+    <label for="{{ form.username.id_for_label }}">E-mail</label>
+    {{ form.username }}
+    <label for="{{ form.password.id_for_label }}">Senha</label>
+    {{ form.password }}
+    <button type="submit" class="btn-login">Entrar</button>
+</form>
+<p class="texto-cadastro">Não possui conta? <a href="{% url 'cadastro' %}">Cadastre-se</a></p>
+{% endblock %}

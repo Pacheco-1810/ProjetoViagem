@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block titulo %}ViajeMais{% endblock %}
+{% block conteudo %}
+<div class="p-4 rounded text-center shadow destaque-promocao">
+    <h1 class="fw-bold">🌎 Sua próxima aventura começa aqui!</h1>
+    <p class="fs-4 mb-3">Descubra destinos incríveis com condições especiais e pacotes exclusivos.</p>
+    <a href="{% url 'pacotes' %}" class="btn btn-lg btn-explorar">Explorar Pacotes</a>
+</div>
+
+{% if slides %}
+<div id="carouselDestinos" class="carousel slide mt-4" data-bs-ride="carousel">
+    <div class="carousel-indicators">
+        {% for s in slides %}
+        <button type="button" data-bs-target="#carouselDestinos" data-bs-slide-to="{{ forloop.counter0 }}" {% if forloop.first %}class="active"{% endif %}></button>
+        {% endfor %}
+    </div>
+    <div class="carousel-inner rounded shadow">
+        {% for s in slides %}
+        <div class="carousel-item {% if forloop.first %}active{% endif %}">
+            <img src="{{ s.imagem.url }}" class="d-block w-100 imagem-carrossel" alt="{{ s.nome }}">
+            <div class="carousel-caption d-none d-md-block">
+                <h2>{{ s.nome }}</h2>
+                <p>{{ s.legenda_carrossel }}</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#carouselDestinos" data-bs-slide="prev"><span class="carousel-control-prev-icon"></span></button>
+    <button class="carousel-control-next" type="button" data-bs-target="#carouselDestinos" data-bs-slide="next"><span class="carousel-control-next-icon"></span></button>
+</div>
+{% endif %}
+{% endblock %}

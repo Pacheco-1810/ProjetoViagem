@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block titulo %}Meu Perfil - ViajeMais{% endblock %}
+{% block conteudo %}
+<section class="text-center mb-4 mt-4">
+    <h1>Dashboard do Usuário</h1>
+    <p class="fs-5">Acompanhe seu perfil, suas viagens e seus benefícios.</p>
+</section>
+
+<section class="row g-4 mb-4">
+    <article class="col-md-4"><div class="card shadow h-100 card-dashboard"><div class="card-body text-center">
+        <h5>Nome</h5><h2>{{ user.first_name|default:user.username }}</h2>
+    </div></div></article>
+    <article class="col-md-4"><div class="card shadow h-100 card-dashboard"><div class="card-body text-center">
+        <h5>E-mail</h5><p class="fs-5">{{ user.email }}</p>
+    </div></div></article>
+    <article class="col-md-4"><div class="card shadow h-100 card-dashboard"><div class="card-body text-center">
+        <h5>Nível atual</h5><h2>{{ n.nivel }}</h2>
+        <span class="badge text-bg-success">{{ n.desconto }}% de desconto</span>
+    </div></div></article>
+</section>
+
+<section class="row g-4 mb-4">
+    <article class="col-md-4"><div class="card shadow h-100"><div class="card-body text-center">
+        <h5>Viagens compradas</h5><h1>{{ qtd }}</h1>
+    </div></div></article>
+    <article class="col-md-4"><div class="card shadow h-100"><div class="card-body text-center">
+        <h5>Total gasto</h5><h1>R$ {{ total_gasto|floatformat:"2g" }}</h1>
+    </div></div></article>
+    <article class="col-md-4"><div class="card shadow h-100"><div class="card-body text-center">
+        <h5>Próximo nível</h5><h1>{{ n.proximo }}</h1>
+    </div></div></article>
+</section>
+
+<section class="card shadow border-0 mb-4"><div class="card-body">
+    <h4>Progresso de nível</h4>
+    <p>{{ n.texto }}</p>
+    <div class="progress">
+        <div class="progress-bar" style="width: {{ n.progresso }}%">{{ n.progresso }}%</div>
+    </div>
+</div></section>
+
+<section class="row g-4">
+    <article class="col-lg-8">
+        <div class="card shadow border-0"><div class="card-body">
+            <h4>Histórico de viagens</h4>
+            {% for c in compras %}
+            <article class="card mb-3 shadow-sm animar-card"><div class="card-body d-flex justify-content-between align-items-center">
+                <div>
+                    <h5>{{ c.destino }}</h5>
+                    <p class="mb-1">Data: {{ c.data|date:"d/m/Y" }} · {{ c.quantidade }} viajante(s)</p>
+                    <p class="mb-0">Valor: R$ {{ c.valor_final|floatformat:"2g" }}
+                        {% if c.desconto_percentual %}<small class="text-muted">({{ c.desconto_percentual }}% de desconto)</small>{% endif %}</p>
+                </div>
+                <span class="badge text-bg-success">Compra {{ forloop.counter }}</span>
+            </div></article>
+            {% empty %}
+            <div class="alert alert-info">Você ainda não possui viagens compradas.</div>
+            {% endfor %}
+        </div></div>
+    </article>
+
+    <aside class="col-lg-4">
+        <div class="card shadow border-0 mb-3"><div class="card-body">
+            <h4>Benefícios por nível</h4>
+            <ul class="list-group">
+                <li class="list-group-item d-flex justify-content-between">Bronze <span class="badge text-bg-secondary">5%</span></li>
+                <li class="list-group-item d-flex justify-content-between">Prata <span class="badge text-bg-primary">10%</span></li>
+                <li class="list-group-item d-flex justify-content-between">Ouro <span class="badge text-bg-warning">15%</span></li>
+                <li class="list-group-item d-flex justify-content-between">Diamante <span class="badge text-bg-success">20%</span></li>
+            </ul>
+        </div></div>
+    </aside>
+</section>
+{% endblock %}

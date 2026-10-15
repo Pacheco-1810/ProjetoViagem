@@ -1,0 +1,16 @@
+{% extends "registration/base_auth.html" %}
+{% block titulo %}Cadastro{% endblock %}
+{% block conteudo %}
+<h2>Criar Conta</h2>
+<form method="post">
+    {% csrf_token %}
+    <label for="{{ form.nome.id_for_label }}">Nome</label>
+    {{ form.nome }}<div class="text-warning small mb-2">{{ form.nome.errors }}</div>
+    <label for="{{ form.email.id_for_label }}">E-mail</label>
+    {{ form.email }}<div class="text-warning small mb-2">{{ form.email.errors }}</div>
+    <label for="{{ form.senha.id_for_label }}">Senha</label>
+    {{ form.senha }}<div class="text-warning small mb-2">{{ form.senha.errors }}</div>
+    <button type="submit" class="btn-login">Cadastrar</button>
+</form>
+<p class="texto-cadastro">Já possui conta? <a href="{% url 'login' %}">Fazer Login</a></p>
+{% endblock %}

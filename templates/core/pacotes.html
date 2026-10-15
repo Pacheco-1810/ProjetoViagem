@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block titulo %}Pacotes - ViajeMais{% endblock %}
+{% block conteudo %}
+<div class="text-center mb-5 mt-4">
+    <h1>Pacotes Disponíveis</h1>
+    <p class="fs-5">Escolha seu próximo destino e adicione ao carrinho.</p>
+</div>
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="row g-4">
+            {% for p in pacotes %}
+            <div class="col-md-6">
+                <div class="card shadow h-100">
+                    <img src="{{ p.imagem.url }}" class="card-img-top" alt="{{ p.nome }}">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ p.nome }}</h5>
+                        <p class="card-text">{{ p.descricao }}</p>
+                        <h4>R$ {{ p.preco|floatformat:"2g" }}</h4>
+                        <form method="post" action="{% url 'adicionar_carrinho' p.pk %}">
+                            {% csrf_token %}
+                            <label class="form-label mt-2" for="qtd{{ p.pk }}">Quantidade de viajantes</label>
+                            <input type="number" min="1" value="1" name="quantidade" id="qtd{{ p.pk }}" class="form-control mb-3">
+                            <button type="submit" class="btn btn-explorar">Adicionar ao Carrinho</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <p class="text-center">Nenhum pacote disponível no momento.</p>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card shadow sticky-top">
+            <div class="card-body">
+                <h3 class="mb-3">Carrinho</h3>
+                <ul class="list-group mb-3">
+                    {% for i in itens %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong>{{ i.pacote.nome }}</strong><br>
+                            {{ i.quantidade }} viajante(s) - R$ {{ i.subtotal|floatformat:"2g" }}
+                        </div>
+                        <form method="post" action="{% url 'remover_carrinho' i.pacote.pk %}" class="m-0">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-sm btn-danger">✖</button>
+                        </form>
+                    </li>
+                    {% endfor %}
+                </ul>
+                <h4>Total: R$ {{ total|floatformat:"2g" }}</h4>
+                <form method="post" action="{% url 'finalizar_compra' %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-explorar w-100 mt-3">Finalizar Compra</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
