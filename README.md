@@ -1,88 +1,140 @@
 # ViajeMais
 
-Projeto acadêmico desenvolvido para a disciplina de Desenvolvimento Web, utilizando HTML5, CSS3, Bootstrap 5 e JavaScript. O sistema simula uma agência de viagens, permitindo o cadastro e login de usuários, consulta de pacotes turísticos, gerenciamento de perfil, carrinho de compras e solicitação de orçamentos personalizados.
-
-## Repositório do Projeto
-
-Link: https://github.com/Pacheco-1810/ProjetoViagem
-
-## Integrantes
-
-- Gabriel Silveira Pacheco
-- Mauricio Miotto Martini
-
----
+Site de agência de turismo desenvolvido em **Django**, com vitrine de pacotes, carrinho de compras, sistema de níveis com desconto, formulário de orçamento e painel administrativo (Django Admin).
 
 ## Funcionalidades
 
-- Página inicial responsiva
-- Página Sobre
-- Página de Contato para solicitação de orçamento personalizado
-- Cadastro de usuários
-- Login e Logout
-- Consulta de pacotes turísticos
-- Carrinho de compras
-- Adição e remoção de pacotes
-- Controle de acesso ao carrinho
-- Dashboard do usuário
-- Perfil do cliente
-- Histórico de viagens
-- Sistema de níveis de fidelidade (Bronze, Prata, Ouro e Diamante)
-- Barra de progresso do nível do usuário
-- Exibição do usuário logado
-- Validação de formulários
-- Interface responsiva para desktop, tablet e smartphone
+- **Início:** destaque promocional e carrossel com os destinos escolhidos no admin.
+- **Pacotes:** listagem dos pacotes ativos e carrinho lateral (adicionar, remover e finalizar compra).
+- **Cadastro e login:** autenticação nativa do Django, com login por e-mail.
+- **Meu Perfil:** dashboard com nível atual, desconto, total gasto, progresso até o próximo nível e histórico de viagens.
+- **Contato:** formulário de orçamento personalizado, salvo no banco de dados.
+- **Sobre:** página institucional.
+- **Admin:** gerenciamento de pacotes, compras, pedidos de orçamento e usuários.
 
----
+## Tecnologias
 
-## Tecnologias Utilizadas
+- Python 3.10+
+- Django 5+
+- Pillow (upload de imagens)
+- SQLite (padrão)
+- Bootstrap 5.3 (via CDN)
 
-- HTML5
-- CSS3
-- Bootstrap 5
-- JavaScript
+## Estrutura do projeto
 
----
+```
+viajemais/
+├── manage.py
+├── requirements.txt
+├── viajemais/            # configurações do projeto
+│   ├── settings.py
+│   ├── urls.py
+│   └── wsgi.py
+├── core/                 # app principal
+│   ├── models.py         # Pacote, Compra, Orcamento
+│   ├── admin.py          # configuração do Django Admin
+│   ├── views.py          # páginas, carrinho e compra
+│   ├── forms.py          # login, cadastro e orçamento
+│   ├── niveis.py         # regras de nível e desconto
+│   ├── urls.py
+│   └── migrations/
+├── templates/
+│   ├── base.html         # cabeçalho, menu e rodapé
+│   ├── core/             # index, pacotes, sobre, contato, perfil
+│   └── registration/     # login e cadastro
+├── static/
+│   ├── css/style.css
+│   └── imgs/             # logo do site
+└── media/                # imagens enviadas pelo admin (criado automaticamente)
+```
 
-## Recursos Utilizados
+## Instalação
 
-- Manipulação do DOM
-- Eventos `click` e `change`
-- LocalStorage
-- SessionStorage
-- Componentes Bootstrap
-- Flexbox
-- Grid Layout
-- Responsividade
+```bash
+# 1. (opcional) criar e ativar um ambiente virtual
+python -m venv venv
+source venv/bin/activate        # Windows: venv\Scripts\activate
 
----
+# 2. instalar dependências
+pip install -r requirements.txt
 
-## Componentes Bootstrap Utilizados
+# 3. criar as tabelas do banco
+python manage.py makemigrations core
+python manage.py migrate
 
-- Navbar
-- Carousel
-- Cards
-- Accordion
-- Alert
-- Badge
-- Progress Bar
-- Form Validation
+# 4. criar o usuário administrador
+python manage.py createsuperuser
 
----
+# 5. iniciar o servidor
+python manage.py runserver
+```
 
-## Armazenamento
+| Endereço | Descrição |
+|---|---|
+| http://127.0.0.1:8000/ | Site |
+| http://127.0.0.1:8000/admin/ | Painel administrativo |
 
-O sistema utiliza:
+## Configuração inicial
 
-- `localStorage` para armazenar os usuários cadastrados e o histórico de viagens.
-- `sessionStorage` para controlar a sessão do usuário logado durante a navegação.
+1. Copie o logo para `static/imgs/logo.png.jpeg`.
+2. Acesse `/admin/` e, em **Pacotes**, cadastre os destinos (nome, descrição, preço por viajante e imagem).
+3. Marque **"Exibir no carrossel da página inicial"** nos pacotes que devem aparecer na home e preencha a legenda.
+4. Use o campo **Ordem de exibição** para controlar a posição dos pacotes na listagem.
 
----
+## Painel administrativo
 
-## Objetivo
+| Seção | O que faz |
+|---|---|
+| **Pacotes** | Cria e edita pacotes. Preço, disponibilidade, carrossel e ordem podem ser alterados direto na listagem. |
+| **Compras** | Histórico de todas as compras, com filtro por destino e data e busca por cliente. |
+| **Pedidos de orçamento** | Mensagens recebidas pelo formulário de contato. Marque como "respondido" na listagem. |
+| **Usuários** | Clientes cadastrados e administradores. |
 
-Aplicar os conhecimentos adquiridos na disciplina de Desenvolvimento Web por meio da criação de uma aplicação completa, utilizando HTML5, CSS3, Bootstrap 5 e JavaScript, contemplando estruturação de páginas, responsividade, interatividade, manipulação do DOM, armazenamento local e versionamento com Git/GitHub.
+## Rotas
 
----
+| URL | Nome | Acesso |
+|---|---|---|
+| `/` | `index` | Público |
+| `/pacotes/` | `pacotes` | Público |
+| `/sobre/` | `sobre` | Público |
+| `/contato/` | `contato` | Público |
+| `/login/` | `login` | Público |
+| `/cadastro/` | `cadastro` | Público |
+| `/logout/` | `logout` | Logado (POST) |
+| `/perfil/` | `perfil` | Logado |
+| `/carrinho/adicionar/<id>/` | `adicionar_carrinho` | Logado (POST) |
+| `/carrinho/remover/<id>/` | `remover_carrinho` | Público (POST) |
+| `/carrinho/finalizar/` | `finalizar_compra` | Logado (POST) |
 
-**ViajeMais — Sua próxima aventura começa aqui.**
+## Models
+
+- **Pacote:** destino, descrição, preço por viajante, imagem, ativo, exibir no carrossel, legenda e ordem.
+- **Compra:** cliente, pacote, destino, quantidade de viajantes, valor original, desconto aplicado e valor final.
+- **Orcamento:** nome, e-mail, destino desejado, data prevista, número de viajantes, mensagem e status de resposta.
+
+## Níveis e descontos
+
+O nível depende da quantidade de viagens já compradas pelo cliente. O desconto é aplicado a cada nova compra, conforme o nível no momento da finalização.
+
+| Nível | Viagens compradas | Desconto |
+|---|---|---|
+| Bronze | 0 a 2 | 5% |
+| Prata | 3 a 5 | 10% |
+| Ouro | 6 a 9 | 15% |
+| Diamante | 10 ou mais | 20% |
+
+As regras ficam em `core/niveis.py`.
+
+## Observações
+
+- O carrinho fica na sessão do usuário; só vira **Compra** ao finalizar.
+- Para adicionar ao carrinho é preciso estar logado.
+- O nome de usuário do Django é o próprio e-mail do cliente.
+- Cada compra guarda o nome do destino e os valores da época, então alterar um pacote no admin não muda o histórico.
+
+## Antes de publicar em produção
+
+- Trocar o `SECRET_KEY` em `settings.py` (de preferência lendo de variável de ambiente).
+- Definir `DEBUG = False` e configurar `ALLOWED_HOSTS`.
+- Servir `static/` e `media/` pelo servidor web (ou usar WhiteNoise / storage externo).
+- Considerar PostgreSQL no lugar do SQLite.
