@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.db import models
+from django.db.models.aggregates import Sum
 
 
 class Pacote(models.Model):
@@ -59,3 +60,26 @@ class Orcamento(models.Model):
 
     def __str__(self):
         return f"{self.nome} - {self.destino}"
+
+class Hotel(models.Model):
+    pacote = models.ForeignKey(Pacote, on_delete=models.CASCADE,related_name="hoteis",verbose_name="Pacote")
+    nome = models.CharField("Nome", max_length=100)
+    estrelas = models.PositiveIntegerField("Estrelas", default=3)
+    vagas = models.PositiveIntegerField("Vagas (viajantes)")
+    acrescimo = models.DecimalField("Acrescimo por viajante (R$)"
+                                    ,max_digits=10, decimal_places=2, default=0)
+
+    class Meta:
+        ordering = ["nome"]
+        verbose_name = "Hotel"
+        verbose_name_plural = "Hoteis"
+
+    def __str__(self):
+        return f"{self.nome}({self.pacote.nome})"
+
+    def ocupadas(self):
+        return self.compras.aggregate(t=Sum("quantidade"))["t"] or 0
+
+    def disponiveis(self):
+        return self.vagas - self.ocupadas()
+

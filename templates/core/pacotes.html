@@ -17,12 +17,35 @@
                         <h5 class="card-title">{{ p.nome }}</h5>
                         <p class="card-text">{{ p.descricao }}</p>
                         <h4>R$ {{ p.preco|floatformat:"2g" }}</h4>
+                        {% if p.esgotado %}
+                        <div class="alert alert-secondary mb-0">Esgotado</div>
+                        {% else %}
                         <form method="post" action="{% url 'adicionar_carrinho' p.pk %}">
                             {% csrf_token %}
+                            {% if p.lista_hoteis %}
+                            <label class="form-label mt-2" for="hotel{{ p.pk }}">Hotel (opcional)</label>
+                          <select name="hotel" id="hotel{{ p.pk }}" class="form-select mb-2">
+    <option value="">Escolher automaticamente</option>
+    {% for h in p.lista_hoteis %}
+        {% if h.livres > 0 %}
+        <option value="{{ h.pk }}">
+            {{ h.nome }} · {{ h.estrelas }}★
+            {% if h.acrescimo %}(+R$ {{ h.acrescimo|floatformat:"2g" }}){% endif %}
+            — {{ h.livres }} vaga(s)
+        </option>
+        {% else %}
+        <option value="{{ h.pk }}" disabled>
+            {{ h.nome }} · {{ h.estrelas }}★ — lotado
+        </option>
+        {% endif %}
+    {% endfor %}
+</select>
+                            {% endif %}
                             <label class="form-label mt-2" for="qtd{{ p.pk }}">Quantidade de viajantes</label>
                             <input type="number" min="1" value="1" name="quantidade" id="qtd{{ p.pk }}" class="form-control mb-3">
                             <button type="submit" class="btn btn-explorar">Adicionar ao Carrinho</button>
                         </form>
+                        {% endif %}
                     </div>
                 </div>
             </div>

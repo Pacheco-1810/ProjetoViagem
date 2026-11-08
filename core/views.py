@@ -1,14 +1,17 @@
 from decimal import Decimal
+from collections import defaultdict
 
 from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
+from django.db import transaction
 from django.db.models import Sum
+from django.db.models.functions import Coalesce
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_POST
 
 from .forms import CadastroForm, OrcamentoForm
-from .models import Compra, Pacote
+from .models import Compra, Pacote, Hotel
 from .niveis import calcular_desconto, calcular_nivel
 
 
@@ -46,15 +49,24 @@ def _carrinho(request):
     pacotes = Pacote.objects.filter(pk__in=dados.keys(), ativo=True)
     itens, total = [], Decimal("0")
     for p in pacotes:
+        item = _item(dados[str(p.pk)])
+        hotel = None
+        if item["hotel"]:
+            hotel = Hotel.objects.filter(pk=item["hotel"],pacote=p).first()
         qtd = dados[str(p.pk)]
         subtotal = p.preco * qtd
         total += subtotal
-        itens.append({"pacote": p, "quantidade": qtd, "subtotal": subtotal})
+        itens.append({"pacote": p, "quantidade": qtd, "subtotal": subtotal,"hotel": hotel})
     return itens, total
 
 
 def pacotes(request):
     itens, total = _carrinho(request)
+    lista = list(Pacote.objects.filter(ativo=True))
+    por_pacote = _hoteis_por_pacote()
+    for p in lista:
+        p.lista_hoteis = por_pacote.get(p.pk,[])
+        p.esgotado = bool(p.lista_hoteis) and all (h.livres <= 0 for h in p.lista_hoteis)
     return render(request, "core/pacotes.html", {
         "pacotes": Pacote.objects.filter(ativo=True),
         "itens": itens, "total": total,
@@ -72,6 +84,26 @@ def adicionar_carrinho(request, pk):
     except ValueError:
         qtd = 1
     carrinho = request.session.get("carrinho", {})
+    atual = _item(carrinho.get(str(pacote.pk),{"qtd":0 , "hotel": None}))
+    qtd_total = atual ["qtd"] + qtd
+
+    hotel_id = None
+    hoteis = _hoteis_por_pacote().get(pacote.pk,[])
+    if hoteis:
+        escolhido = request.POST.get("hotel","")
+        if escolhido: #hotel escolhido pelo clente
+            hotel = next((h for h in hoteis if str(h.pk) == escolhido), None)
+            if hotel is None:
+                messages.error(request,"Hotel inválido.")
+                return redirect("pacotes")
+            if hotel.livres < qtd_total:
+                messages.error(request,f"{hotel.nome} tem só {hotel.livres} vaga(s).")
+                return redirect("pacotes")
+            hotel_id = hotel.pk
+        elif max(h.livres for h in hoteis) < qtd_total:
+            messages.error(request, "Não há vagas de suficientes nesse pacotes.")
+            return redirect("pacotes")
+
     carrinho[str(pacote.pk)] = carrinho.get(str(pacote.pk), 0) + qtd
     request.session["carrinho"] = carrinho
     return redirect("pacotes")
@@ -94,17 +126,40 @@ def finalizar_compra(request):
         return redirect("pacotes")
 
     desconto = calcular_desconto(request.user.compras.count())
-    for item in itens:
-        original = item["subtotal"]
-        Compra.objects.create(
-            usuario=request.user, pacote=item["pacote"], destino=item["pacote"].nome,
-            quantidade=item["quantidade"], valor_original=original,
-            desconto_percentual=desconto,
-            valor_final=original - original * desconto / 100,
-        )
-    request.session["carrinho"] = {}
-    messages.success(request, f"Compra finalizada com sucesso! Desconto aplicado: {desconto}%")
-    return redirect("perfil")
+    try:
+        with transaction.atomic():
+            for item in itens:
+                pacote, qtd = item["pacote"], item["quantidade"]
+
+                hoteis = list(Hotel.objects.select_for_update()
+                              .filter(pacote=pacote).order_by("pk"))
+                hotel = None
+                if hoteis:
+                    ocup = dict(Compra.objects.filter(hotel__in=hoteis)
+                                .values("hotel").annotate(t=Sum("quantidade"))
+                                .values_list("hotel", "t"))
+                    livres = {h.pk: h.vagas - (ocup.get(h.pk) or 0) for h in hoteis}
+
+                    escolhido = item["hotel"].pk if item["hotel"] else None
+                    if escolhido in livres:
+                        hotel = next(h for h in hoteis if h.pk == escolhido)
+                    else:
+                        hotel = max(hoteis, key=lambda h: livres[h.pk])
+                    if livres[hotel.pk] < qtd:
+                        raise SemVaga(hotel.nome)
+
+                preco = pacote.preco + (hotel.acrescimo if hotel else 0)
+                original = preco * qtd
+                Compra.objects.create(
+                    usuario=request.user, pacote=pacote, destino=pacote.nome,
+                    hotel=hotel, hotel_nome=hotel.nome if hotel else "",
+                    quantidade=qtd, valor_original=original,
+                    desconto_percentual=desconto,
+                    valor_final=original - original * desconto / 100,
+                )
+    except SemVaga as e:
+        messages.success(request, f"Compra finalizada com sucesso! Desconto aplicado: {desconto}%")
+        return redirect("perfil")
 
 
 @login_required
@@ -115,3 +170,25 @@ def perfil(request):
     return render(request, "core/perfil.html", {
         "compras": compras, "qtd": qtd, "total_gasto": total, "n": calcular_nivel(qtd),
     })
+
+class SemVaga(Exception):
+    pass
+
+def _item(valor):
+    """Aceita o formato antigo (só a quantidade) e o novo (dict)."""
+    if isinstance(valor,dict):
+        return {"qtd": valor.get("qtd",1), "hotel": valor.get("hotel")}
+    return {"qtd": valor, "hotel": None}
+
+def _hoteis_por_pacote():
+    """Hotéis com vagas livres calculadas, agrupados por pacote."""
+    hoteis = Hotel.objects.annotate(ocup=Coalesce(Sum("compras__quantidade"), 0))
+    por_pacote = defaultdict(list)
+    for h in hoteis:
+        h.livres = h.vagas - h.ocup
+        por_pacote[h.pacote_id].append(h)
+    return por_pacote
+
+
+
+
