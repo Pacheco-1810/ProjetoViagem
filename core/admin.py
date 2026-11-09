@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Compra, Orcamento, Pacote
+from .models import Compra, Orcamento, Pacote, Hotel
 
 
 @admin.register(Pacote)
@@ -29,3 +29,19 @@ class OrcamentoAdmin(admin.ModelAdmin):
     list_filter = ("respondido", "criado_em")
     search_fields = ("nome", "email", "destino", "mensagem")
     readonly_fields = ("criado_em",)
+
+@admin.register(Hotel)
+class HotelAdmin(admin.ModelAdmin):
+    list_display = ("nome", "pacote", "estrelas", "vagas", "ocupadas_", "livres_", "acrescimo")
+    list_editable = ("vagas", "acrescimo")
+    list_filter = ("pacote",)
+    search_fields = ("nome", "pacote__nome")
+
+    @admin.display(description="Ocupadas")
+    def ocupadas_(self, obj):
+        return obj.ocupadas()
+
+    @admin.display(description="Livres")
+    def livres_(self, obj):
+        return obj.disponiveis()
+

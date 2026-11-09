@@ -64,8 +64,7 @@
                     <li class="list-group-item d-flex justify-content-between align-items-center">
                         <div>
                             <strong>{{ i.pacote.nome }}</strong><br>
-                            {{ i.quantidade }} viajante(s) - R$ {{ i.subtotal|floatformat:"2g" }}
-                        </div>
+                            {{ i.quantidade }} viajante(s){% if i.hotel %} · {{ i.hotel.nome }}{% endif %} - R$ {{ i.subtotal|floatformat:"2g" }}                        </div>
                         <form method="post" action="{% url 'remover_carrinho' i.pacote.pk %}" class="m-0">
                             {% csrf_token %}
                             <button type="submit" class="btn btn-sm btn-danger">✖</button>
