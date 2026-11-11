@@ -1,6 +1,9 @@
+from decimal import Decimal
+
 from django.conf import settings
 from django.db import models
 from django.db.models.aggregates import Sum
+from django.core.validators import MinValueValidator, MaxValueValidator
 
 
 class Pacote(models.Model):
@@ -23,16 +26,87 @@ class Pacote(models.Model):
 
 
 class Compra(models.Model):
-    usuario = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,
-                                related_name="compras", verbose_name="Cliente")
-    pacote = models.ForeignKey(Pacote, on_delete=models.SET_NULL, null=True, blank=True,
-                               verbose_name="Pacote")
-    destino = models.CharField("Destino", max_length=100)
-    quantidade = models.PositiveIntegerField("Viajantes", default=1)
-    valor_original = models.DecimalField("Valor original (R$)", max_digits=12, decimal_places=2)
-    desconto_percentual = models.PositiveIntegerField("Desconto (%)", default=0)
-    valor_final = models.DecimalField("Valor final (R$)", max_digits=12, decimal_places=2)
-    data = models.DateTimeField("Data da compra", auto_now_add=True)
+    CONFIRMADA = "confirmada"
+    CANCELADA = "cancelada"
+
+    STATUS = [
+        (CONFIRMADA, "Confirmada"),
+        (CANCELADA, "Cancelada"),
+    ]
+
+    usuario = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="compras",
+        verbose_name="Cliente",
+    )
+
+    pacote = models.ForeignKey(
+        Pacote,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name="Pacote",
+    )
+
+    hotel = models.ForeignKey(
+        "Hotel",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="compras",
+        verbose_name="Hotel",
+    )
+
+    hotel_nome = models.CharField(
+        "Hotel (na época)",
+        max_length=100,
+        blank=True
+    )
+
+    destino = models.CharField(
+        "Destino",
+        max_length=100
+    )
+
+    quantidade = models.PositiveIntegerField(
+        "Viajantes",
+        default=1,
+        validators=[MinValueValidator(1)]
+    )
+
+    valor_original = models.DecimalField(
+        "Valor original (R$)",
+        max_digits=12,
+        decimal_places=2
+    )
+
+    desconto_percentual = models.PositiveIntegerField(
+        "Desconto (%)",
+        default=0,
+        validators=[
+            MinValueValidator(0),
+            MaxValueValidator(100)
+        ]
+    )
+
+    valor_final = models.DecimalField(
+        "Valor final (R$)",
+        max_digits=12,
+        decimal_places=2
+    )
+
+    status = models.CharField(
+        "Status",
+        max_length=10,
+        choices=STATUS,
+        default=CONFIRMADA
+    )
+
+    data = models.DateTimeField(
+        "Data da compra",
+        auto_now_add=True
+    )
 
     class Meta:
         ordering = ["data"]
@@ -42,16 +116,46 @@ class Compra(models.Model):
     def __str__(self):
         return f"{self.destino} - {self.usuario}"
 
+    def cancelar(self):
+        if self.status != self.CONFIRMADA:
+            raise ValueError("Esta reserva já está cancelada.")
+
+        self.status = self.CANCELADA
+        self.save(update_fields=["status"])
+
 
 class Orcamento(models.Model):
     nome = models.CharField(max_length=120)
     email = models.EmailField("E-mail")
-    destino = models.CharField("Destino desejado", max_length=120)
-    data_prevista = models.DateField("Data prevista", null=True, blank=True)
-    viajantes = models.PositiveIntegerField("Nº de viajantes", default=1)
+
+    destino = models.CharField(
+        "Destino desejado",
+        max_length=120
+    )
+
+    data_prevista = models.DateField(
+        "Data prevista",
+        null=True,
+        blank=True
+    )
+
+    viajantes = models.PositiveIntegerField(
+        "Nº de viajantes",
+        default=1,
+        validators=[MinValueValidator(1)]
+    )
+
     mensagem = models.TextField("Descrição da viagem")
-    criado_em = models.DateTimeField("Recebido em", auto_now_add=True)
-    respondido = models.BooleanField("Respondido", default=False)
+
+    criado_em = models.DateTimeField(
+        "Recebido em",
+        auto_now_add=True
+    )
+
+    respondido = models.BooleanField(
+        "Respondido",
+        default=False
+    )
 
     class Meta:
         ordering = ["-criado_em"]
@@ -61,25 +165,60 @@ class Orcamento(models.Model):
     def __str__(self):
         return f"{self.nome} - {self.destino}"
 
+
 class Hotel(models.Model):
-    pacote = models.ForeignKey(Pacote, on_delete=models.CASCADE,related_name="hoteis",verbose_name="Pacote")
-    nome = models.CharField("Nome", max_length=100)
-    estrelas = models.PositiveIntegerField("Estrelas", default=3)
-    vagas = models.PositiveIntegerField("Vagas (viajantes)")
-    acrescimo = models.DecimalField("Acrescimo por viajante (R$)"
-                                    ,max_digits=10, decimal_places=2, default=0)
+    pacote = models.ForeignKey(
+        Pacote,
+        on_delete=models.CASCADE,
+        related_name="hoteis",
+        verbose_name="Pacote",
+    )
+
+    nome = models.CharField(
+        "Nome",
+        max_length=100
+    )
+
+    estrelas = models.PositiveIntegerField(
+        "Estrelas",
+        default=3,
+        validators=[
+            MinValueValidator(1),
+            MaxValueValidator(5)
+        ]
+    )
+
+    vagas = models.PositiveIntegerField(
+        "Vagas (viajantes)",
+        validators=[MinValueValidator(1)]
+    )
+
+    acrescimo = models.DecimalField(
+        "Acréscimo por viajante (R$)",
+        max_digits=10,
+        decimal_places=2,
+        default=0,
+        validators=[MinValueValidator(Decimal("0.00"))],
+    )
 
     class Meta:
         ordering = ["nome"]
         verbose_name = "Hotel"
-        verbose_name_plural = "Hoteis"
+        verbose_name_plural = "Hotéis"
 
     def __str__(self):
-        return f"{self.nome}({self.pacote.nome})"
+        return f"{self.nome} ({self.pacote.nome})"
 
     def ocupadas(self):
-        return self.compras.aggregate(t=Sum("quantidade"))["t"] or 0
+        """Considera somente reservas confirmadas."""
+        return (
+            self.compras.filter(
+                status=Compra.CONFIRMADA
+            ).aggregate(
+                total=Sum("quantidade")
+            )["total"] or 0
+        )
 
     def disponiveis(self):
-        return self.vagas - self.ocupadas()
-
+        """Calcula as vagas restantes."""
+        return max(self.vagas - self.ocupadas(), 0)

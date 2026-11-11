@@ -1,140 +1,241 @@
 # ViajeMais
 
-Site de agência de turismo desenvolvido em **Django**, com vitrine de pacotes, carrinho de compras, sistema de níveis com desconto, formulário de orçamento e painel administrativo (Django Admin).
+Sistema web de agência de turismo desenvolvido com **Python e Django**, que permite consultar pacotes turísticos, realizar reservas, gerenciar hotéis e controlar a disponibilidade de vagas. O sistema também possui uma API REST documentada com Swagger.
+
+## Integrantes
+
+- Mauricio Miotto Martini
+- Gabriel Silveira Pacheco
 
 ## Funcionalidades
 
-- **Início:** destaque promocional e carrossel com os destinos escolhidos no admin.
-- **Pacotes:** listagem dos pacotes ativos e carrinho lateral (adicionar, remover e finalizar compra).
-- **Cadastro e login:** autenticação nativa do Django, com login por e-mail.
-- **Meu Perfil:** dashboard com nível atual, desconto, total gasto, progresso até o próximo nível e histórico de viagens.
-- **Contato:** formulário de orçamento personalizado, salvo no banco de dados.
+- **Página inicial:** destaque promocional e carrossel de destinos selecionados no painel administrativo.
+- **Pacotes:** listagem de pacotes turísticos ativos.
+- **Hotéis:** gerenciamento de hotéis vinculados aos pacotes, com controle de vagas e disponibilidade.
+- **Cadastro e login:** autenticação de usuários utilizando o sistema do Django.
+- **Carrinho:** adicionar, remover e finalizar compras.
+- **Reservas:** criação de reservas com validação de disponibilidade dos hotéis.
+- **Meu perfil:** dashboard com nível do cliente, desconto, total gasto, progresso e histórico de viagens.
+- **Contato:** formulário de orçamento personalizado, com armazenamento no banco de dados.
 - **Sobre:** página institucional.
-- **Admin:** gerenciamento de pacotes, compras, pedidos de orçamento e usuários.
+- **Painel administrativo:** gerenciamento de pacotes, hotéis, compras, orçamentos e usuários.
+- **API REST:** consulta de pacotes e gerenciamento de reservas.
+- **Swagger:** documentação interativa dos endpoints da API.
 
 ## Tecnologias
 
-- Python 3.10+
-- Django 5+
+- Python
+- Django
+- Django REST Framework
+- drf-spectacular (Swagger/OpenAPI)
+- SQLite
 - Pillow (upload de imagens)
-- SQLite (padrão)
-- Bootstrap 5.3 (via CDN)
+- Bootstrap 5.3
+- HTML e CSS
 
 ## Estrutura do projeto
 
-```
-viajemais/
+```text
+ProjetoViagem/
 ├── manage.py
 ├── requirements.txt
-├── viajemais/            # configurações do projeto
+├── viajemais/
 │   ├── settings.py
 │   ├── urls.py
 │   └── wsgi.py
-├── core/                 # app principal
-│   ├── models.py         # Pacote, Compra, Orcamento
-│   ├── admin.py          # configuração do Django Admin
-│   ├── views.py          # páginas, carrinho e compra
-│   ├── forms.py          # login, cadastro e orçamento
-│   ├── niveis.py         # regras de nível e desconto
+├── core/
+│   ├── models.py
+│   ├── admin.py
+│   ├── views.py
+│   ├── forms.py
+│   ├── services.py
+│   ├── niveis.py
+│   ├── Serializers.py
+│   ├── api_views.py
+│   ├── api_urls.py
+│   ├── tests.py
 │   ├── urls.py
 │   └── migrations/
 ├── templates/
-│   ├── base.html         # cabeçalho, menu e rodapé
-│   ├── core/             # index, pacotes, sobre, contato, perfil
-│   └── registration/     # login e cadastro
 ├── static/
-│   ├── css/style.css
-│   └── imgs/             # logo do site
-└── media/                # imagens enviadas pelo admin (criado automaticamente)
+└── media/
 ```
 
-## Instalação
+## Instalação e execução
+
+### 1. Clonar o repositório
 
 ```bash
-# 1. (opcional) criar e ativar um ambiente virtual
+git clone URL_DO_REPOSITORIO
+cd ProjetoViagem
+```
+
+### 2. Criar e ativar o ambiente virtual
+
+Windows:
+
+```powershell
 python -m venv venv
-source venv/bin/activate        # Windows: venv\Scripts\activate
+venv\Scripts\activate
+```
 
-# 2. instalar dependências
+Linux:
+
+```bash
+python3 -m venv venv
+source venv/bin/activate
+```
+
+### 3. Instalar as dependências
+
+```bash
 pip install -r requirements.txt
+```
 
-# 3. criar as tabelas do banco
-python manage.py makemigrations core
+### 4. Criar e atualizar o banco de dados
+
+```bash
+python manage.py makemigrations
 python manage.py migrate
+```
 
-# 4. criar o usuário administrador
+### 5. Criar o usuário administrador
+
+```bash
 python manage.py createsuperuser
+```
 
-# 5. iniciar o servidor
+### 6. Iniciar o servidor
+
+```bash
 python manage.py runserver
 ```
 
+O sistema ficará disponível em:
+
+http://127.0.0.1:8000/
+
+## Endereços do sistema
+
 | Endereço | Descrição |
 |---|---|
-| http://127.0.0.1:8000/ | Site |
-| http://127.0.0.1:8000/admin/ | Painel administrativo |
+| `/` | Página inicial |
+| `/pacotes/` | Consulta de pacotes |
+| `/sobre/` | Página institucional |
+| `/contato/` | Formulário de orçamento |
+| `/login/` | Login |
+| `/cadastro/` | Cadastro |
+| `/perfil/` | Perfil do cliente |
+| `/admin/` | Painel administrativo |
+| `/api/pacotes/` | API de pacotes |
+| `/api/reservas/` | API de reservas |
+| `/api/schema/` | Esquema OpenAPI |
+| `/api/docs/` | Documentação Swagger |
 
-## Configuração inicial
+## Configuração inicial e dados de demonstração
 
-1. Copie o logo para `static/imgs/logo.png.jpeg`.
-2. Acesse `/admin/` e, em **Pacotes**, cadastre os destinos (nome, descrição, preço por viajante e imagem).
-3. Marque **"Exibir no carrossel da página inicial"** nos pacotes que devem aparecer na home e preencha a legenda.
-4. Use o campo **Ordem de exibição** para controlar a posição dos pacotes na listagem.
+Após iniciar o sistema:
+
+1. Acesse `/admin/` com o usuário administrador.
+2. Cadastre pacotes turísticos, informando nome, descrição, preço e imagem.
+3. Cadastre hotéis vinculados aos respectivos pacotes.
+4. Configure a quantidade de vagas disponíveis em cada hotel.
+5. Cadastre usuários clientes para demonstrar o processo de compra.
+6. Realize reservas para demonstrar o controle de disponibilidade e o cálculo de descontos.
+
+Para a apresentação, recomenda-se cadastrar pelo menos três pacotes, dois hotéis e dois usuários clientes.
 
 ## Painel administrativo
 
-| Seção | O que faz |
+| Seção | Funcionalidade |
 |---|---|
-| **Pacotes** | Cria e edita pacotes. Preço, disponibilidade, carrossel e ordem podem ser alterados direto na listagem. |
-| **Compras** | Histórico de todas as compras, com filtro por destino e data e busca por cliente. |
-| **Pedidos de orçamento** | Mensagens recebidas pelo formulário de contato. Marque como "respondido" na listagem. |
-| **Usuários** | Clientes cadastrados e administradores. |
+| Pacotes | Cadastro e edição de destinos turísticos. |
+| Hotéis | Gerenciamento de hotéis, preços adicionais e vagas. |
+| Compras | Consulta do histórico de reservas e valores. |
+| Orçamentos | Consulta e acompanhamento dos pedidos recebidos. |
+| Usuários | Gerenciamento de clientes e administradores. |
 
-## Rotas
+## API REST
 
-| URL | Nome | Acesso |
-|---|---|---|
-| `/` | `index` | Público |
-| `/pacotes/` | `pacotes` | Público |
-| `/sobre/` | `sobre` | Público |
-| `/contato/` | `contato` | Público |
-| `/login/` | `login` | Público |
-| `/cadastro/` | `cadastro` | Público |
-| `/logout/` | `logout` | Logado (POST) |
-| `/perfil/` | `perfil` | Logado |
-| `/carrinho/adicionar/<id>/` | `adicionar_carrinho` | Logado (POST) |
-| `/carrinho/remover/<id>/` | `remover_carrinho` | Público (POST) |
-| `/carrinho/finalizar/` | `finalizar_compra` | Logado (POST) |
+A API foi desenvolvida utilizando Django REST Framework.
 
-## Models
+Principais recursos:
 
-- **Pacote:** destino, descrição, preço por viajante, imagem, ativo, exibir no carrossel, legenda e ordem.
-- **Compra:** cliente, pacote, destino, quantidade de viajantes, valor original, desconto aplicado e valor final.
-- **Orcamento:** nome, e-mail, destino desejado, data prevista, número de viajantes, mensagem e status de resposta.
+- Consulta de pacotes turísticos.
+- Criação de reservas.
+- Consulta de reservas do usuário autenticado.
+- Cancelamento de reservas, conforme as permissões.
+- Restrição de operações administrativas para usuários autorizados.
+
+### Documentação Swagger
+
+A documentação interativa está disponível em:
+
+`http://127.0.0.1:8000/api/docs/`
+
+O esquema OpenAPI está disponível em:
+
+`http://127.0.0.1:8000/api/schema/`
+
+## Modelos do sistema
+
+- **Pacote:** nome, descrição, preço, imagem, status de ativação e informações de exibição.
+- **Hotel:** nome, pacote relacionado, classificação, quantidade de vagas e acréscimo de preço.
+- **Compra:** usuário, pacote, hotel, quantidade de viajantes, valores, desconto, status e data.
+- **Orcamento:** nome, e-mail, destino desejado, data prevista, quantidade de viajantes, mensagem e status de resposta.
 
 ## Níveis e descontos
 
-O nível depende da quantidade de viagens já compradas pelo cliente. O desconto é aplicado a cada nova compra, conforme o nível no momento da finalização.
+O nível do cliente é calculado conforme a quantidade de viagens confirmadas.
 
-| Nível | Viagens compradas | Desconto |
-|---|---|---|
+| Nível | Viagens confirmadas | Desconto |
+|---|---:|---:|
 | Bronze | 0 a 2 | 5% |
 | Prata | 3 a 5 | 10% |
 | Ouro | 6 a 9 | 15% |
 | Diamante | 10 ou mais | 20% |
 
-As regras ficam em `core/niveis.py`.
+As regras de cálculo estão implementadas em `core/niveis.py`.
 
-## Observações
+## Regras de negócio
 
-- O carrinho fica na sessão do usuário; só vira **Compra** ao finalizar.
-- Para adicionar ao carrinho é preciso estar logado.
-- O nome de usuário do Django é o próprio e-mail do cliente.
-- Cada compra guarda o nome do destino e os valores da época, então alterar um pacote no admin não muda o histórico.
+- O cliente precisa estar autenticado para realizar uma reserva.
+- A quantidade de viajantes deve respeitar o limite estabelecido pelo sistema.
+- A reserva depende da disponibilidade de vagas no hotel.
+- O sistema calcula automaticamente o valor original e o desconto aplicado.
+- Reservas canceladas não devem consumir vagas disponíveis.
+- Clientes podem consultar somente suas próprias reservas.
+- Administradores possuem permissões adicionais de gerenciamento.
 
-## Antes de publicar em produção
+## Testes automatizados
 
-- Trocar o `SECRET_KEY` em `settings.py` (de preferência lendo de variável de ambiente).
-- Definir `DEBUG = False` e configurar `ALLOWED_HOSTS`.
-- Servir `static/` e `media/` pelo servidor web (ou usar WhiteNoise / storage externo).
-- Considerar PostgreSQL no lugar do SQLite.
+O projeto possui testes automatizados utilizando o framework de testes do Django e o Django REST Framework.
+
+Para executar os testes:
+
+```bash
+python manage.py test core
+```
+
+**Resultado obtido durante o desenvolvimento:** 16 testes executados com sucesso.
+
+Os testes abrangem regras de desconto, criação de reservas, disponibilidade, cancelamento, autenticação e permissões da API.
+
+## Limitações e melhorias futuras
+
+- Implementação de integração com meios de pagamento.
+- Envio de e-mails reais para confirmação de reservas.
+- Melhorias na geração de relatórios administrativos.
+- Possibilidade de utilização de PostgreSQL em ambiente de produção.
+- Implantação em servidor de produção.
+
+## Segurança e produção
+
+Antes de publicar o sistema:
+
+- Armazenar a `SECRET_KEY` em variável de ambiente.
+- Desativar `DEBUG`.
+- Configurar `ALLOWED_HOSTS`.
+- Não publicar senhas ou credenciais no repositório.
+- Configurar corretamente arquivos estáticos e mídias.
+- Avaliar a utilização de PostgreSQL em produção.
