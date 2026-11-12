@@ -159,11 +159,6 @@ São 40 testes, cobrindo operações válidas, dados inválidos e acesso sem per
 
 Histórico completo: `git log --format='%an %s'` ou a aba *Commits* do GitHub.
 
-| Integrante | Atividades |
-|---|---|
-| Mauricio Miotto Martini | (preencher) |
-| Gabriel Silveira Pacheco | (preencher) |
-
 ## Uso de bibliotecas e ferramentas de IA
 
 Bibliotecas: Django, Django REST Framework, drf-spectacular, django-jazzmin, Pillow e Bootstrap.
