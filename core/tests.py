@@ -323,7 +323,9 @@ class PacoteAPITest(APITestCase):
 
         self.assertEqual(self.client.get(reverse("pacotes")).status_code, 200)
 
-    def test_swagger_abre(self):
+    def test_swagger_so_para_administrador(self):
+        self.assertEqual(self.client.get("/api/docs/").status_code, 302)
+        self.client.force_login(User.objects.create_user("adm", "adm@a.com", "12345678", is_staff=True))
         self.assertEqual(self.client.get("/api/docs/").status_code, 200)
         self.assertEqual(self.client.get("/api/schema/").status_code, 200)
 

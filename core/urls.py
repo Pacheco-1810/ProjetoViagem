@@ -1,4 +1,5 @@
 from django.contrib.auth import views as auth_views
+from django.contrib.admin.views.decorators import staff_member_required
 from django.urls import include, path
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 from rest_framework.routers import DefaultRouter
@@ -37,7 +38,7 @@ urlpatterns = [
     path("gestao/hoteis/<int:pk>/excluir/", views.gestao_hotel_excluir, name="gestao_hotel_excluir"),
     path("gestao/reservas/", views.gestao_reservas, name="gestao_reservas"),
 
-    path("api/schema/", SpectacularAPIView.as_view(), name="api-schema"),
-    path("api/docs/", SpectacularSwaggerView.as_view(url_name="api-schema"), name="api-docs"),
+    path("api/schema/", staff_member_required(SpectacularAPIView.as_view(), login_url="login"), name="api-schema"),
+    path("api/docs/", staff_member_required(SpectacularSwaggerView.as_view(url_name="api-schema"), login_url="login"), name="api-docs"),
     path("api/", include(router.urls)),
 ]
