@@ -3,11 +3,5 @@ venv/
 __pycache__/
 *.pyc
 db.sqlite3
-<<<<<<< HEAD
 media/
 .idea/
-=======
-*.pyc
-media/
-.idea/
->>>>>>> 1c8228b5a3fb9d6ec982ed510696cfa6d2fb7eb7

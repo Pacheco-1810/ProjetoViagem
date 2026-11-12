@@ -17,11 +17,7 @@
             <span class="text-white fw-bold fs-5">Oi, {{ user.first_name|default:user.username }}</span>
             <a href="{% url 'api-docs' %}" class="btn btn-outline-light">API</a>
             {% if user.is_staff %}
-<<<<<<< HEAD
                 <a href="{% url 'gestao_pacotes' %}" class="btn btn-warning fw-bold">Gestão</a>
-=======
-                <a href="{% url 'gestao' %}" class="btn btn-warning fw-bold">Gestão</a>
->>>>>>> 1c8228b5a3fb9d6ec982ed510696cfa6d2fb7eb7
                 <a href="{% url 'admin:index' %}" class="btn btn-outline-light">Admin</a>
             {% endif %}
             <form method="post" action="{% url 'logout' %}" class="m-0">
