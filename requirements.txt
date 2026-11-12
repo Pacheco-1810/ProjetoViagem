@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+
+>>>>>>> 1c8228b5a3fb9d6ec982ed510696cfa6d2fb7eb7
 Django>=5.1
 Pillow>=10.0
 djangorestframework>=3.15

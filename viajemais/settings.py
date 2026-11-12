@@ -16,8 +16,13 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+<<<<<<< HEAD
     "rest_framework",
     "drf_spectacular",
+=======
+    'rest_framework',
+    'drf_spectacular',
+>>>>>>> 1c8228b5a3fb9d6ec982ed510696cfa6d2fb7eb7
     "core",
 ]
 
@@ -75,6 +80,7 @@ REST_FRAMEWORK = {
 
 SPECTACULAR_SETTINGS = {
     "TITLE": "ViajeMais API",
+<<<<<<< HEAD
     "DESCRIPTION": "API para consulta de pacotes turísticos e reservas.",
     "VERSION": "1.0.0",
 }
@@ -118,3 +124,8 @@ JAZZMIN_UI_TWEAKS = {
     "sidebar_nav_child_indent": True,
     "actions_sticky_top": True,
 }
+=======
+    "DESCRIPTION": "API para gerenciamento de pacotes turísticos e reservas.",
+    "VERSION": "1.0.0",
+}
+>>>>>>> 1c8228b5a3fb9d6ec982ed510696cfa6d2fb7eb7
