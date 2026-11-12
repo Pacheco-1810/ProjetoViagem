@@ -15,12 +15,17 @@
     <div class="container d-flex justify-content-end align-items-center gap-2" id="areaUsuario">
         {% if user.is_authenticated %}
             <span class="text-white fw-bold fs-5">Oi, {{ user.first_name|default:user.username }}</span>
-            {% if user.is_staff %}<a href="{% url 'admin:index' %}" class="btn btn-outline-light">Admin</a>{% endif %}
+            <a href="{% url 'api-docs' %}" class="btn btn-outline-light">API</a>
+            {% if user.is_staff %}
+                <a href="{% url 'gestao_pacotes' %}" class="btn btn-warning fw-bold">Gestão</a>
+                <a href="{% url 'admin:index' %}" class="btn btn-outline-light">Admin</a>
+            {% endif %}
             <form method="post" action="{% url 'logout' %}" class="m-0">
                 {% csrf_token %}
                 <button type="submit" class="btn btn-danger">Sair</button>
             </form>
         {% else %}
+            <a href="{% url 'api-docs' %}" class="btn btn-outline-light">API</a>
             <a href="{% url 'login' %}" class="btn btn-outline-light">Login</a>
             <a href="{% url 'cadastro' %}" class="btn btn-warning fw-bold">Cadastre-se</a>
         {% endif %}

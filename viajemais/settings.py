@@ -1,7 +1,10 @@
+import os
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-SECRET_KEY = "troque-esta-chave-em-producao"
+
+# em produção, defina a variável de ambiente SECRET_KEY
+SECRET_KEY = os.environ.get("SECRET_KEY", "chave-apenas-para-desenvolvimento")
 DEBUG = True
 ALLOWED_HOSTS = []
 
@@ -13,6 +16,8 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "rest_framework",
+    "drf_spectacular",
     "core",
 ]
 
@@ -59,3 +64,57 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 LOGIN_URL = "login"
 LOGIN_REDIRECT_URL = "pacotes"
 LOGOUT_REDIRECT_URL = "index"
+
+REST_FRAMEWORK = {
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework.authentication.SessionAuthentication",
+        "rest_framework.authentication.BasicAuthentication",
+    ],
+}
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "ViajeMais API",
+    "DESCRIPTION": "API para consulta de pacotes turísticos e reservas.",
+    "VERSION": "1.0.0",
+}
+
+JAZZMIN_SETTINGS = {
+    "site_title": "ViajeMais",
+    "site_header": "ViajeMais",
+    "site_brand": "ViajeMais",
+    "site_logo": "imgs/logo.png.jpeg",
+    "welcome_sign": "Painel administrativo do ViajeMais",
+    "copyright": "ViajeMais Turismo",
+    "search_model": ["core.Pacote", "core.Compra"],
+    "topmenu_links": [
+        {"name": "Início", "url": "index", "new_window": True},
+        {"name": "Gestão", "url": "gestao_pacotes", "new_window": True},
+        {"name": "API (Swagger)", "url": "api-docs", "new_window": True},
+    ],
+    "order_with_respect_to": ["core.Pacote", "core.Hotel", "core.Compra", "core.Orcamento", "auth"],
+    "icons": {
+        "auth": "fas fa-users-cog",
+        "auth.User": "fas fa-user",
+        "auth.Group": "fas fa-users",
+        "core.Pacote": "fas fa-suitcase-rolling",
+        "core.Hotel": "fas fa-hotel",
+        "core.Compra": "fas fa-receipt",
+        "core.Orcamento": "fas fa-envelope-open-text",
+    },
+    "related_modal_active": True,
+    "changeform_format": "horizontal_tabs",
+    "show_ui_builder": False,
+}
+
+JAZZMIN_UI_TWEAKS = {
+    "theme": "flatly",
+    "navbar": "navbar-dark",
+    "navbar_fixed": True,
+    "sidebar": "sidebar-dark-warning",
+    "sidebar_fixed": True,
+    "brand_colour": "navbar-dark",
+    "accent": "accent-warning",
+    "sidebar_nav_child_indent": True,
+    "actions_sticky_top": True,
+}

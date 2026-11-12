@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block titulo %}Excluir - ViajeMais{% endblock %}
+{% block conteudo %}
+<div class="card shadow border-0 p-4 text-center">
+    <h2>Excluir "{{ objeto }}"?</h2>
+    {% if aviso %}<p class="text-muted">{{ aviso }}</p>{% endif %}
+    <p>Esta ação não pode ser desfeita.</p>
+    <form method="post" class="d-flex justify-content-center gap-2">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Sim, excluir</button>
+        <a href="{{ voltar }}" class="btn btn-outline-secondary">Cancelar</a>
+    </form>
+</div>
+{% endblock %}

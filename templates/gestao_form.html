@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block titulo %}{{ titulo }} - ViajeMais{% endblock %}
+{% block conteudo %}
+<h1 class="mb-3">{{ titulo }}</h1>
+
+<form method="post" novalidate class="card shadow border-0 p-4">
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+    {% for campo in form %}
+    <div class="mb-3">
+        {{ campo.label_tag }} {{ campo }}
+        <div class="text-danger small">{{ campo.errors }}</div>
+    </div>
+    {% endfor %}
+    <div class="d-flex gap-2">
+        <button type="submit" class="btn btn-explorar">Salvar</button>
+        <a href="{{ voltar }}" class="btn btn-outline-secondary">Voltar</a>
+    </div>
+</form>
+{% endblock %}
